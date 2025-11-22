@@ -17,11 +17,16 @@ Open een terminal. Controleer of het pad goed staat
 Geef het volgende commando in: npm install react-router-dom
 Nu wordt React Router in de map geïstalleerd
 
+Installeren Supabase-files bij React
+Ga in Visual naar de map en open de terminal. Controleer het pad
+Geef het commando: npm install @supabase/supabase-js
+Supabase wordt in je map geïnstalleerd
+
 Zelf opstarten: 
 Geef in de terminal waar de bestanden instaan het commando: npm run dev
 In de terminal zal worden weergegeven dat de server wordt opgestart
 Wanneer dit is gebeurd, kan deze worden geopend via de link: http://localhost:5173/
 
 Installeren via Github:
-react-bestanden (met Router).zip uitpakken in hoofdmap
+react-bestanden (met Router en Supabase).zip uitpakken in hoofdmap
 In deze map een nieuwe map src maken, waar alle bestanden van Github in komen te staan
