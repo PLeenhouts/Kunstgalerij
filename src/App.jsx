@@ -18,11 +18,27 @@ export default App
     
 // Overzichtspagina
 function GalleryHome({ artworks }) {
+  const [searchTerm, setSearchTerm] = useState("");
+  const filteredArtworks = artworks.filter((art) => {
+  const term = searchTerm.toLowerCase();
+    return (
+      art.title.toLowerCase().includes(term) ||
+      art.artist.toLowerCase().includes(term) 
+    );
+  });
+  
   return (
     <div>
       <h1>Virtuele Kunstgalerij</h1>
       <p>Een overzicht van kunstwerken</p>
-    
+
+      <input
+        type="text"
+        placeholder="Zoek op titel of kunstenaar..."
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+      />
+      
       <div
         style={{
           display: "grid",
@@ -31,10 +47,11 @@ function GalleryHome({ artworks }) {
           marginTop: "1rem",
         }}
       >
-         {artworks.map((art) => (
+         {filteredArtworks.map((art) => (
           <div key={art.id}>
             <Link to={`/art/${art.id}`}>
-              <img src={art.imageUrl}alt={art.title}/></Link>
+              <img src={art.imageUrl}alt={art.title}/>
+            </Link>
 
             <h2>{art.title}</h2>
             <p>{art.artist}</p>
