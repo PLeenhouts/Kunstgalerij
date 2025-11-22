@@ -7,6 +7,7 @@ export const initialArtworks = [
     imageUrl: "https://picsum.photos/200/200",
     description: "Een mooie foto 1",
     isFavorite: false,
+    comments: []
   },
   {
     id: "Kunstwerk 2",
@@ -16,6 +17,7 @@ export const initialArtworks = [
     imageUrl: "https://picsum.photos/200/201",
     description: "Een mooie foto 2",
     isFavorite: false,
+    comments: []
   },
   {
     id: "Kunstwerk 3",
@@ -25,6 +27,7 @@ export const initialArtworks = [
     imageUrl: "https://picsum.photos/200/202",
     description: "Een mooie foto 3",
     isFavorite: false,
+    comments: []
   },
  {
     id: "Kunstwerk 4",
@@ -35,6 +38,7 @@ export const initialArtworks = [
     description: "Een mooie foto 4",
     techniques: ["Foto", "Portret" ],
     isFavorite: false,
+    comments: []
      },
   {
     id: "Kunstwerk 5",
@@ -45,6 +49,7 @@ export const initialArtworks = [
     description: "Een mooie foto 2",
     techniques: ["Foto", "stil leven"],
     isFavorite: false,
+    comments: []
   },
   {
     id: "Kunstwerk 6",
@@ -55,6 +60,7 @@ export const initialArtworks = [
     description: "Een mooie foto 6",
     techniques: ["Foto", "Zwart-wit"],
     isFavorite: false,
+    comments: []
   },
   {
       id: "Kunstwerk 7",
@@ -65,6 +71,7 @@ export const initialArtworks = [
     description: "Een mooie foto 7",
     techniques: ["Foto", "Snelle sluitertijd"],
     isFavorite: false,
+    comments: []
      },
   {
     id: "Kunstwerk 8",
@@ -75,6 +82,7 @@ export const initialArtworks = [
     description: "Een mooie foto 8",
     techniques: ["Foto", "Lange sluitertijd"],
     isFavorite: false,
+    comments: []
   },
   {
     id: "Kunstwerk 9",
@@ -83,7 +91,9 @@ export const initialArtworks = [
     year: 2017,
     imageUrl: "https://picsum.photos/200/208",
     description: "Een mooie foto 9",
-    techniques: ["Foto", "Micro"],isFavorite: false,
+    techniques: ["Foto", "Micro"],
+    isFavorite: false,
+    comments: []
   },
     {
     id: "Kunstwerk 10",
@@ -94,6 +104,7 @@ export const initialArtworks = [
     description: "Een mooie foto 10",
     techniques: ["Foto", "Portret" ],
     isFavorite: false,
+    comments: []
   },
   {
     id: "Kunstwerk 11",
@@ -104,6 +115,7 @@ export const initialArtworks = [
     description: "Een mooie foto 11",
     techniques: ["Foto", "stil leven"],
     isFavorite: false,
+    comments: []
   },
   {
     id: "Kunstwerk 12",
@@ -114,5 +126,7 @@ export const initialArtworks = [
     description: "Een mooie foto 12",
     techniques: ["Foto", "Zwart-wit"],
     isFavorite: false,
+    comments: []
   },
 ];
+
