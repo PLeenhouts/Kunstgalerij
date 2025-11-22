@@ -1,106 +1,233 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Routes, Route, Link, useParams } from "react-router-dom";
 import './App.css'
-import { initialArtworks } from "./data/artworks.js";
+import { supabase } from "./supabaseClient.js";
 
 function App() {
-  const [artworks, setArtworks] = useState(initialArtworks);
+  const [artworks, setArtworks] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
   
-function handleToggleFavorite(id) {
-  setArtworks((prevArtworks) =>
+  useEffect(() => {
+    async function fetchArtworks() {
+      setLoading(true);
+      setError("");
+
+      const { data, error } = await supabase
+        .from("artworks")
+        .select("*")
+        .order("title", { ascending: true });
+
+      if (error) {
+        console.error("Fout bij laden artworks:", error);
+        setError("Kon kunstwerken niet laden.");
+
+      } else {
+        
+        const mapped = data.map((row) => ({
+          id: row.id,
+          title: row.title,
+          artist: row.artist,
+          year: row.year,
+          imageUrl: row.image_url,
+          description: row.description,
+          techniques: row.techniques
+            ? row.techniques.split(",").map((t) => t.trim())
+            : [],
+          isFavorite: row.is_favorite ?? false,
+          comments: [],
+        }));
+        setArtworks(mapped);
+      }
+
+      setLoading(false);
+    }
+
+    fetchArtworks();
+  }, []);
+
+async function handleToggleFavorite(id, currentIsFavorite) {
+   setArtworks((prevArtworks) =>
     prevArtworks.map((art) =>
       art.id === id ? { ...art, isFavorite: !art.isFavorite } 
       : art
+    )
+  );
+
+  const { error } = await supabase
+    .from("artworks")
+    .update({ is_favorite: !currentIsFavorite })
+    .eq("id", id);
+
+  if (error) {
+    console.error("Fout bij updaten favoriet:", error.message);
+    }
+}
+
+  function handleAddComment(id, text) {
+    setArtworks((prevArtworks) =>
+      prevArtworks.map((art) =>
+        art.id === id ? { ...art, comments: [ ...(art.comments || []), { id: Date.now(), text, date: new Date().toISOString()}]}
+        : art
       )
     );
   }
 
-function handleAddComment(id, text) {
-  setArtworks((prevArtworks) =>
-    prevArtworks.map((art) =>
-      art.id === id ? { ...art, comments: [ ...(art.comments || []), { id: Date.now(), text, date: new Date().toISOString()}]}
-      : art
-      )
-    );
-  }
+  async function handleAddArtwork(formData) {
+    const rowToInsert = {
+      title: formData.title.trim(),
+      artist: formData.artist.trim(),
+      year: formData.year ? Number(formData.year) : null,
+      image_url: formData.imageUrl?.trim() || null,
+      description: formData.description?.trim() || null,
+      techniques: formData.techniques?.trim() || null,
+      is_favorite: false,
+    };
 
-function handleAddArtwork(data) {
-    setArtworks((prev) => {      
-      const slug =
-        data.title
-          .toLowerCase()
-          .replace(/[^a-z0-9]+/g, "-")
-          .replace(/(^-|-$)/g, "") || `art-${Date.now()}`;
+    const { data, error } = await supabase
+      .from("artworks")
+      .insert(rowToInsert)
+      .select()
+      .single(); 
 
-      if (prev.some((a) => a.id === slug)) {
-        alert("Er bestaat al een kunstwerk met deze titel. Pas de titel aan.");
-        return prev;
-      }
-
-      const newArt = {
-        id: slug,
-        title: data.title.trim(),
-        artist: data.artist.trim(),
-        year: Number(data.year) || "",
-        techniques: data.techniques
-          ? data.techniques.split(",").map((t) => t.trim()).filter(Boolean)
-          : [],
-        imageUrl:
-          data.imageUrl.trim() ||
-          "https://via.placeholder.com/400x250?text=Nieuw+kunstwerk",
-        description: data.description.trim(),
-        isFavorite: false,
-        comments: [],
-      };
-
-      return [newArt, ...prev];
-    });
-  }
-
-function handleUpdateArtwork(id, data) {
-    setArtworks((prev) =>
-      prev.map((art) =>
-        art.id === id
-          ? {
-              ...art,
-              title: data.title.trim(),
-              artist: data.artist.trim(),
-              year: Number(data.year) || "",
-              techniques: data.techniques
-                ? data.techniques
-                    .split(",")
-                    .map((t) => t.trim())
-                    .filter(Boolean)
-                : [],
-              imageUrl:
-                data.imageUrl.trim() ||
-                "https://via.placeholder.com/400x250?text=Kunstwerk",
-              description: data.description.trim(),
-            }
-          : art
-      )
-    );
-  }
-
-  function handleDeleteArtwork(id) {
-    if (!window.confirm("Weet je zeker dat je dit kunstwerk wilt verwijderen?")) {
+    if (error) {
+      console.error("Fout bij toevoegen artwork:", error);
+      alert("Toevoegen in Supabase mislukt.");
       return;
     }
-    setArtworks((prev) => prev.filter((art) => art.id !== id));
+
+   const newArt = mapRowToArtwork(data);
+
+  setArtworks((prev) => [newArt, ...prev]);
+}
+
+  async function handleUpdateArtwork(id, formData) {
+  const rowToUpdate = {
+    title: formData.title.trim(),
+    artist: formData.artist.trim(),
+    year: formData.year ? Number(formData.year) : null,
+    image_url: formData.imageUrl?.trim() || null,
+    description: formData.description?.trim() || null,
+    techniques: formData.techniques?.trim() || null,
+     };
+
+  const { data, error } = await supabase
+    .from("artworks")
+    .update(rowToUpdate)
+    .eq("id", id)
+    .select()
+    .single();
+
+  if (error) {
+    console.error("Fout bij updaten artwork:", error);
+    alert("Bewerken in Supabase mislukt.");
+    return;
+  }
+
+  const updatedArt = mapRowToArtwork(data);
+
+  setArtworks((prev) =>
+    prev.map((art) => (art.id === id ? updatedArt : art))
+  );
+}
+
+  async function handleDeleteArtwork(id) {
+  if (!window.confirm("Weet je zeker dat je dit kunstwerk wilt verwijderen?")) {
+    return;
+  }
+
+  const { error } = await supabase
+    .from("artworks")
+    .delete()
+    .eq("id", id);
+
+  if (error) {
+    console.error("Fout bij verwijderen artwork:", error);
+    alert("Verwijderen in Supabase mislukt.");
+    return;
+  }
+   setArtworks((prev) => prev.filter((art) => art.id !== id));
+}
+
+  useEffect(() => {
+    async function fetchArtworks() {
+      setLoading(true);
+      setError("");
+
+      const { data, error: supaError } = await supabase
+        .from("artworks")
+        .select("*")
+        .order("title", { ascending: true });
+
+      if (error) {
+        console.error("Fout bij laden artworks:", SupaError);
+        setError("Kon kunstwerken niet laden.");
+      } else {
+        const mapped = data.map((row) => ({
+          id: row.id,
+          title: row.title,
+          artist: row.artist,
+          year: row.year,
+          imageUrl: row.image_url,
+          description: row.description,
+          techniques: row.techniques
+            ? row.techniques.split(",").map((t) => t.trim())
+            : [],
+          isFavorite: row.is_favorite ?? false,
+          comments: [],
+        }));
+        setArtworks(mapped);
+      }
+
+      setLoading(false);
+    }
+
+    fetchArtworks();
+  }, []);
+
+  if (loading) {
+    return <p>Kunstwerken laden…</p>;
+  }
+
+  if (error) {
+    return (
+      <div>
+        <p>{error}</p>
+        <p>
+          <button onClick={() => window.location.reload()}>Opnieuw proberen</button>
+        </p>
+      </div>
+    );
   }  
-  
+
   return (
     <Routes>
       <Route path="/" element={<GalleryHome artworks={artworks} onToggleFavorite={handleToggleFavorite} />} />
       <Route path="/art/:id" element={<ArtDetailPage artworks={artworks} onToggleFavorite={handleToggleFavorite} onAddComment={handleAddComment} />} />
       <Route path="/favorites" element={<FavoritesPage artworks={artworks} onToggleFavorite={handleToggleFavorite} />} />
-      <Route path="/admin" element={<AdminGate artworks={artworks} />} />  
+      <Route path="/admin" element={<AdminGate artworks={artworks} onAddArtwork={handleAddArtwork} onUpdateArtwork={handleUpdateArtwork} onDeleteArtwork={handleDeleteArtwork} />} />  
     </Routes>
   );
 }
 
-export default App  
-    
+export default App;
+
+function mapRowToArtwork(row) {
+  return {
+    id: row.id,
+    title: row.title,
+    artist: row.artist,
+    year: row.year,
+    imageUrl: row.image_url,
+    description: row.description,
+    techniques: row.techniques
+      ? row.techniques.split(",").map((t) => t.trim()).filter(Boolean)
+      : [],
+    isFavorite: row.is_favorite ?? false,
+    comments: [],
+  };
+}
+
 // Overzichtspagina
 function GalleryHome({ artworks, onToggleFavorite }) {
   const [searchTerm, setSearchTerm] = useState("");
@@ -111,24 +238,24 @@ function GalleryHome({ artworks, onToggleFavorite }) {
       art.artist.toLowerCase().includes(term) 
     );
   });
-  
+
   return (
     <div>
       <h1>Virtuele Kunstgalerij</h1>
       <p>Een overzicht van kunstwerken</p>
-      
+    
       <p>
-        <Link to="/favorites">Bekijk favorieten →</Link>
+        <Link to="/favorites">Bekijk favorieten →</Link> |{" "}
         <Link to="/admin">Admin</Link>
       </p>
-      
-      <input
+
+    <input
         type="text"
         placeholder="Zoek op titel of kunstenaar..."
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
       />
-      
+    
       <div
         style={{
           display: "grid",
@@ -145,12 +272,11 @@ function GalleryHome({ artworks, onToggleFavorite }) {
 
             <h2>{art.title}</h2>
             <p>{art.artist}</p>
-            <p>Jaar: {art.year}</p> 
-
-            <button onClick={() => onToggleFavorite(art.id)}>
+            <p>Jaar: {art.year}</p>
+            <button onClick={() => onToggleFavorite(art.id, art.isFavorite)}>
               {art.isFavorite ? "Favoriet" : "Markeer als favoriet"}
             </button>
-            
+
             <p><Link to={`/art/${art.id}`}>Bekijk details →</Link></p>
           </div>
         ))}
@@ -162,9 +288,9 @@ function GalleryHome({ artworks, onToggleFavorite }) {
 // Detailpagina
 function ArtDetailPage({ artworks, onToggleFavorite, onAddComment }) {
   const { id } = useParams();
-  const art = artworks.find((a) => a.id === id);
+  const art = artworks.find((a) => String(a.id) === id);
   const [commentText, setCommentText] = useState("");
-  
+
   if (!art) {
     return (
       <div>
@@ -177,23 +303,26 @@ function ArtDetailPage({ artworks, onToggleFavorite, onAddComment }) {
   return (
     <div>
       <p>
-        <Link to="/">← Terug naar overzicht</Link>
-        <Link to="/favorites">Naar favorieten</Link></p>
-      
+        <Link to="/">← Terug naar overzicht</Link> |{" "}
+        <Link to="/favorites">Naar favorieten</Link>
+      </p>
+
       <img src={art.imageUrl} alt={art.title}/>
-      <h1>{art.title}</h1>
+
+      <h1 >{art.title}</h1>
       <p>{art.artist} · {art.year}</p>
+
       {Array.isArray(art.techniques) && art.techniques.length > 0 && (
         <p>Technieken: {art.techniques.join(", ")}</p>
       )}
-      
+
       <p>Beschrijving: {art.description}</p>
 
-        <button onClick={() => onToggleFavorite(art.id)}>
-          {art.isFavorite ? "Favoriet" : "Markeer als favoriet"}
-        </button>
+       <button onClick={() => onToggleFavorite(art.id, art.isFavorite)}>
+        {art.isFavorite ? "Favoriet" : "Markeer als favoriet"}
+      </button>
 
-    <hr/>
+    <hr />
     <h2>Comments</h2>
 
     {art.comments && art.comments.length > 0 ? (
@@ -228,7 +357,7 @@ function ArtDetailPage({ artworks, onToggleFavorite, onAddComment }) {
         >
           Plaats comment
         </button>
-      </div>      
+      </div>
     </div>
   );
 }
@@ -268,7 +397,7 @@ function FavoritesPage({ artworks, onToggleFavorite }) {
             <p>{art.artist}</p>
             <p>Jaar: {art.year}</p>
 
-            <button onClick={() => onToggleFavorite(art.id)}>
+            <button onClick={() => onToggleFavorite(art.id, art.isFavorite)}>
               {art.isFavorite ? "Favoriet" : "Markeer als favoriet"}
             </button>
           </div>
@@ -279,7 +408,7 @@ function FavoritesPage({ artworks, onToggleFavorite }) {
 }
 
 // Beveiligde login Admin-pagina
-function AdminGate({ artworks }) {
+function AdminGate({ artworks, onAddArtwork, onUpdateArtwork, onDeleteArtwork }) {
   const [password, setPassword] = useState("");
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [error, setError] = useState("");
@@ -295,7 +424,7 @@ function AdminGate({ artworks }) {
   }
 
     if (isAuthenticated) {
-    return <AdminPage artworks={artworks} />;
+    return <AdminPage artworks={artworks} onAddArtwork={onAddArtwork} onUpdateArtwork={onUpdateArtwork} onDeleteArtwork={onDeleteArtwork} />;
   }
 
    return (
