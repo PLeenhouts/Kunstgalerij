@@ -28,7 +28,8 @@ function handleAddComment(id, text) {
     <Routes>
       <Route path="/" element={<GalleryHome artworks={artworks} onToggleFavorite={handleToggleFavorite} />} />
       <Route path="/art/:id" element={<ArtDetailPage artworks={artworks} onToggleFavorite={handleToggleFavorite} onAddComment={handleAddComment} />} />
-      <Route path="/favorites" element={<FavoritesPage artworks={artworks} onToggleFavorite={handleToggleFavorite} />} />    
+      <Route path="/favorites" element={<FavoritesPage artworks={artworks} onToggleFavorite={handleToggleFavorite} />} />
+      <Route path="/admin" element={<AdminGate artworks={artworks} />} />  
     </Routes>
   );
 }
@@ -53,6 +54,7 @@ function GalleryHome({ artworks, onToggleFavorite }) {
       
       <p>
         <Link to="/favorites">Bekijk favorieten →</Link>
+        <Link to="/admin">Admin</Link>
       </p>
       
       <input
@@ -208,6 +210,64 @@ function FavoritesPage({ artworks, onToggleFavorite }) {
           </div>
         ))}
       </div>
+    </div>
+  );
+}
+
+// Beveiligde login Admin-pagina
+function AdminGate({ artworks }) {
+  const [password, setPassword] = useState("");
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [error, setError] = useState("");
+
+  function handleSubmit(e) {
+    e.preventDefault();
+    if (password === "test") {
+      setIsAuthenticated(true);
+      setError("");
+    } else {
+      setError("Onjuist wachtwoord.");
+    }
+  }
+
+    if (isAuthenticated) {
+    return <AdminPage artworks={artworks} />;
+  }
+
+   return (
+    <div>
+      <h1>Admin login</h1>
+      <p>Voer het admin-wachtwoord in om verder te gaan.</p>
+
+      <form onSubmit={handleSubmit}>
+        <input
+          type="password"
+          placeholder="Wachtwoord"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
+        <button type="submit">Inloggen</button>
+      </form>
+
+      {error && <p style={{ color: "red" }}>{error}</p>}
+
+      <p>
+        <Link to="/">← Terug naar overzicht</Link>
+      </p>
+    </div>
+  );
+}
+
+//admin-pagina
+function AdminPage({ artworks }) {
+  return (
+    <div>
+      <h1>Admin-pagina</h1>
+      <p>Je ziet dit alleen na het juiste wachtwoord ("test").</p>
+
+      <p>
+        <Link to="/">← Terug naar overzicht</Link>
+      </p>
     </div>
   );
 }
