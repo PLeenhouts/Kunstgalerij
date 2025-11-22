@@ -19,6 +19,7 @@ function App() {
     <Routes>
       <Route path="/" element={<GalleryHome artworks={artworks} onToggleFavorite={handleToggleFavorite} />} />
       <Route path="/art/:id" element={<ArtDetailPage artworks={artworks} onToggleFavorite={handleToggleFavorite} />} />
+      <Route path="/favorites" element={<FavoritesPage artworks={artworks} onToggleFavorite={handleToggleFavorite} />} />    
     </Routes>
   );
 }
@@ -40,7 +41,11 @@ function GalleryHome({ artworks, onToggleFavorite }) {
     <div>
       <h1>Virtuele Kunstgalerij</h1>
       <p>Een overzicht van kunstwerken</p>
-
+      
+      <p>
+        <Link to="/favorites">Bekijk favorieten →</Link>
+      </p>
+      
       <input
         type="text"
         placeholder="Zoek op titel of kunstenaar..."
@@ -94,7 +99,11 @@ function ArtDetailPage({ artworks, onToggleFavorite }) {
 
   return (
     <div>
-      <p><Link to="/">← Terug naar overzicht</Link></p>
+      <p>
+        <Link to="/">← Terug naar overzicht</Link>
+        <Link to="/favorites">Naar favorieten</Link>
+      </p>
+      
       <img src={art.imageUrl} alt={art.title}/>
       <h1 >{art.title}</h1>
       <p>{art.artist} · {art.year}</p>
@@ -108,6 +117,51 @@ function ArtDetailPage({ artworks, onToggleFavorite }) {
           {art.isFavorite ? "Favoriet" : "Markeer als favoriet"}
         </button>
       
+    </div>
+  );
+}
+
+// Favorietenpagina
+function FavoritesPage({ artworks, onToggleFavorite }) {
+    const favoriteArtworks = artworks.filter((art) => art.isFavorite);
+
+  return (
+    <div>
+      <h1>Favorieten</h1>
+      <p>Overzicht van alle favoriete kunstwerken.</p>
+
+      <p>
+        <Link to="/">← Terug naar overzicht</Link>
+      </p>
+
+      {favoriteArtworks.length === 0 && (
+        <p>Je hebt nog geen favorieten geselecteerd.</p>
+      )}
+
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
+          gap: "1rem",
+          marginTop: "1rem",
+        }}
+      >
+        {favoriteArtworks.map((art) => (
+          <div key={art.id}>
+            <Link to={`/art/${art.id}`}>
+              <img src={art.imageUrl} alt={art.title} />
+            </Link>
+
+            <h2>{art.title}</h2>
+            <p>{art.artist}</p>
+            <p>Jaar: {art.year}</p>
+
+            <button onClick={() => onToggleFavorite(art.id)}>
+              {art.isFavorite ? "Favoriet" : "Markeer als favoriet"}
+            </button>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
