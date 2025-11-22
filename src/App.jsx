@@ -6,10 +6,19 @@ import { initialArtworks } from "./data/artworks.js";
 function App() {
   const [artworks, setArtworks] = useState(initialArtworks);
   
+  function handleToggleFavorite(id) {
+    setArtworks((prevArtworks) =>
+      prevArtworks.map((art) =>
+        art.id === id ? { ...art, isFavorite: !art.isFavorite } 
+        : art
+      )
+    );
+  }
+  
   return (
     <Routes>
-      <Route path="/" element={<GalleryHome artworks={artworks} />} />
-      <Route path="/art/:id" element={<ArtDetailPage artworks={artworks} />} />
+      <Route path="/" element={<GalleryHome artworks={artworks} onToggleFavorite={handleToggleFavorite} />} />
+      <Route path="/art/:id" element={<ArtDetailPage artworks={artworks} onToggleFavorite={handleToggleFavorite} />} />
     </Routes>
   );
 }
@@ -17,7 +26,7 @@ function App() {
 export default App  
     
 // Overzichtspagina
-function GalleryHome({ artworks }) {
+function GalleryHome({ artworks, onToggleFavorite }) {
   const [searchTerm, setSearchTerm] = useState("");
   const filteredArtworks = artworks.filter((art) => {
   const term = searchTerm.toLowerCase();
@@ -55,7 +64,12 @@ function GalleryHome({ artworks }) {
 
             <h2>{art.title}</h2>
             <p>{art.artist}</p>
-            <p>Jaar: {art.year}</p>           
+            <p>Jaar: {art.year}</p> 
+
+            <button onClick={() => onToggleFavorite(art.id)}>
+              {art.isFavorite ? "Favoriet" : "Markeer als favoriet"}
+            </button>
+            
             <p><Link to={`/art/${art.id}`}>Bekijk details →</Link></p>
           </div>
         ))}
@@ -65,7 +79,7 @@ function GalleryHome({ artworks }) {
 }
 
 // Detailpagina
-function ArtDetailPage({ artworks }) {
+function ArtDetailPage({ artworks, onToggleFavorite }) {
   const { id } = useParams();
   const art = artworks.find((a) => a.id === id);
 
@@ -87,7 +101,13 @@ function ArtDetailPage({ artworks }) {
       {Array.isArray(art.techniques) && art.techniques.length > 0 && (
         <p>Technieken: {art.techniques.join(", ")}</p>
       )}
-      <p>Beschrijving: {art.description}</p>      
+      
+      <p>Beschrijving: {art.description}</p>
+
+        <button onClick={() => onToggleFavorite(art.id)}>
+          {art.isFavorite ? "Favoriet" : "Markeer als favoriet"}
+        </button>
+      
     </div>
   );
 }
