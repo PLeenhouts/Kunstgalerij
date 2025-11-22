@@ -16,7 +16,7 @@ function App() {
 
 export default App  
     
-    // Overzichtspagina
+// Overzichtspagina
 function GalleryHome({ artworks }) {
   return (
     <div>
