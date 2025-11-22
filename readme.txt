@@ -23,5 +23,5 @@ In de terminal zal worden weergegeven dat de server wordt opgestart
 Wanneer dit is gebeurd, kan deze worden geopend via de link: http://localhost:5173/
 
 Installeren via Github:
-react-bestanden (met Router).zip uitpakken in hoofdmap.
-In deze map een nieuwe map src maken, waar alle bestanden van Github in komen te staan.
+react-bestanden (met Router).zip uitpakken in hoofdmap
+In deze map een nieuwe map src maken, waar alle bestanden van Github in komen te staan
