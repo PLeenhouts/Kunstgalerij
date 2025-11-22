@@ -1,6 +1,6 @@
 Repository voor groepsopdracht Webdesign Module React
 
-Installeren bestanden:
+Installeren React bestanden:
 Maak een map aan waarin alle bestanden komen te staan
 Open deze map in Virtual Code Studio
 Open een terminal. Controleer of het pad goed staat
