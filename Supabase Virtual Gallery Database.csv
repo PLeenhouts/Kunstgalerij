@@ -1,0 +1,13 @@
+id,title,artist,year,image_url,description,techniques,is_favorite
+1,Kunstwerk 01,Jan Onbekend,2025,https://picsum.photos/200/200,Een mooie foto 1,"Foto, Snelle sluitertijd",true
+2,Kunstwerk 02,Piet Bekend,2024,https://picsum.photos/200/201,Een mooie foto 2,"Foto, Langzame sluitertijd",false
+3,Kunstwerk 03,Mieke KendeOn,2023,https://picsum.photos/200/202,Een mooie foto 3,"Foto, Micro",false
+4,Kunstwerk 04,Bebe KendeBe,2022,https://picsum.photos/200/203,Een mooie foto 4,"Foto, Portret",false
+5,Kunstwerk 05,Jean Unknown,2021,https://picsum.photos/200/204,Een mooie foto 5,Foto. Stil leven,false
+6,Kunstwerk 06,Heino Known,2020,https://picsum.photos/200/205,Een mooie foto 6,"Foto, Zwart-wit",false
+7,Kunstwerk 07,Klaas Nwonknu,2019,https://picsum.photos/200/206,Een mooie foto 7,"Foto, Lange sluitertijd",false
+8,Kunstwerk 08,Iris Nwonk,2018,https://picsum.photos/200/207,Een mooie foto 8,"Foto, Snelle sluitertijd",false
+9,Kunstwerk 09,Lonneke DnekebnO,2017,https://picsum.photos/200/208,Een mooie foto 9,"Foto, Micro",false
+10,Kunstwerk 10,Donald Dnekeb,2016,https://picsum.photos/200/209,Een mooie foto 10,"Foto, Stadsleven",false
+11,Kunstwerk 11,Mabel Invisible,2015,https://picsum.photos/200/210,Een mooie foto 11,"Foto, Stil leven",false
+12,Kunstwerk 12,Michael IJzerzicht,2014,https://picsum.photos/200/211,Een mooie foto 12,"Foto, Kleur",false
