@@ -6,7 +6,7 @@ import { supabase } from "./supabaseClient.js";
 import GalleryHome from "./pages/GalleryHome.jsx";
 import ArtDetailPage from "./pages/ArtDetailPage.jsx";
 import FavoritesPage from "./pages/FavoritesPage.jsx";
-import AdminGate from "./pages/Admingate.jsx";
+import AdminGate from "./pages/AdminGate.jsx";
 
 function App() {
   const [artworks, setArtworks] = useState([]);
