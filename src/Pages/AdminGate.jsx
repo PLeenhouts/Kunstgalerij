@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Routes, Route, Link, useParams } from "react-router-dom";
 
-import AdminPage from "./Pages/AdminPage.jsx";
+import AdminPage from "./AdminPage.jsx";
 
 export default function AdminGate({ artworks, onAddArtwork, onUpdateArtwork, onDeleteArtwork }) {
   const [password, setPassword] = useState("");
@@ -46,3 +46,4 @@ export default function AdminGate({ artworks, onAddArtwork, onUpdateArtwork, onD
   );
 
 }
+
