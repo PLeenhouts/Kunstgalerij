@@ -1,0 +1,14 @@
+/* Grid */
+.art-grid {
+  display: grid;
+  gap: 1rem;
+  padding: 1rem;
+  /* automatisch zoveel kolommen als er passen */
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+
+/* Kunstwerk */
+.art-card { 
+  border-radius: 8px;
+  padding: 0.75rem;
+}

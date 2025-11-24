@@ -12,3 +12,74 @@
   border-radius: 8px;
   padding: 0.75rem;
 }
+
+
+/* Uniforme afbeelding */
+.art-image {
+  width: 100%;
+  height: 200px; /* vaste hoogte */
+  object-fit: cover; /* bijsnijden zonder vervormen */
+  border-radius: 8px;
+  display: block;
+}
+
+/* Grid layout voor overzicht */
+/* .art-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+} */
+
+/* verbeterd om de foto's  niet te breed te laten worden */
+.art-grid div {
+  max-width: 220px;
+}
+
+
+/* URL in admin-tabel netjes afkappen */
+.table-url {
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+/* Hart-knop styling */
+.heart-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.8rem;
+  color: gray;
+  transition: color 0.3s ease;
+}
+
+.heart-button.favorited {
+  color: red;
+}
+
+/* de afbeelding niet te breed maken op de detailpagina */
+.art-detail-image {
+  width: 100%;
+  max-width: 400px; /* stel een limiet in */
+  height: auto; /* behoud verhoudingen */
+  object-fit: cover;
+  display: block;
+  /* margin: 0 auto; centreert de afbeelding */
+  margin: 0; /* links uitlijnen*/
+  border-radius: 8px;
+}
+
+/* kaartje maken op de overzichtspagina */
+
+.art-card {
+  border: 1px solid #ddd;       /* dun randje */
+  border-radius: 8px;           /* afgeronde hoeken */
+  padding: 10px;                /* ruimte binnen de kaart */
+  background-color: #fff;       /* optioneel: witte achtergrond */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* subtiele schaduw */
+}
+

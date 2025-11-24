@@ -229,15 +229,13 @@ function mapRowToArtwork(row) {
 }
 
 // Overzichtspagina
-// aangepast
-
 function GalleryHome({ artworks, onToggleFavorite }) {
   const [searchTerm, setSearchTerm] = useState("");
   const filteredArtworks = artworks.filter((art) => {
-    const term = searchTerm.toLowerCase();
+  const term = searchTerm.toLowerCase();
     return (
       art.title.toLowerCase().includes(term) ||
-      art.artist.toLowerCase().includes(term)
+      art.artist.toLowerCase().includes(term) 
     );
   });
 
@@ -245,52 +243,49 @@ function GalleryHome({ artworks, onToggleFavorite }) {
     <div>
       <h1>Virtuele Kunstgalerij</h1>
       <p>Een overzicht van kunstwerken</p>
-
+    
       <p>
         <Link to="/favorites">Bekijk favorieten →</Link> |{" "}
         <Link to="/admin">Admin</Link>
       </p>
 
-      <input
+    <input
         type="text"
         placeholder="Zoek op titel of kunstenaar..."
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
       />
-
-     
-<div className="art-grid">
-  {filteredArtworks.map((art) => (
-    <div key={art.id} className="art-card">
-      <Link to={`/art/${art.id}`}>
-        <img src={art.imageUrl} alt={art.title} className="art-image" />
-      </Link>
-
-      <h2>{art.title}</h2>
-      <p>{art.artist}</p>
-      <p>Jaar: {art.year}</p>
-
-      <button
-        onClick={() => onToggleFavorite(art.id, art.isFavorite)}
-        className={`heart-button ${art.isFavorite ? "favorited" : ""}`}
+    
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
+          gap: "1rem",
+          marginTop: "1rem",
+        }}
       >
-        ♥
-      </button>
+         {filteredArtworks.map((art) => (
+          <div key={art.id}>
+            <Link to={`/art/${art.id}`}>
+              <img src={art.imageUrl}alt={art.title}/>
+            </Link>
 
-      <p>
-        <Link to={`/art/${art.id}`}>Bekijk details →</Link>
-      </p>
-    </div>
-  ))}
-</div>
+            <h2>{art.title}</h2>
+            <p>{art.artist}</p>
+            <p>Jaar: {art.year}</p>
+            <button onClick={() => onToggleFavorite(art.id, art.isFavorite)}>
+              {art.isFavorite ? "Favoriet" : "Markeer als favoriet"}
+            </button>
 
+            <p><Link to={`/art/${art.id}`}>Bekijk details →</Link></p>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
 
-
 // Detailpagina
-// Versie 2 die de foto beperkt m
 function ArtDetailPage({ artworks, onToggleFavorite, onAddComment }) {
   const { id } = useParams();
   const art = artworks.find((a) => String(a.id) === id);
@@ -312,10 +307,9 @@ function ArtDetailPage({ artworks, onToggleFavorite, onAddComment }) {
         <Link to="/favorites">Naar favorieten</Link>
       </p>
 
-      {/* <img src={art.imageUrl} alt={art.title} className="art-image" /> */}
-      <img src={art.imageUrl} alt={art.title} className="art-detail-image" />
+      <img src={art.imageUrl} alt={art.title}/>
 
-      <h1>{art.title}</h1>
+      <h1 >{art.title}</h1>
       <p>{art.artist} · {art.year}</p>
 
       {Array.isArray(art.techniques) && art.techniques.length > 0 && (
@@ -324,43 +318,41 @@ function ArtDetailPage({ artworks, onToggleFavorite, onAddComment }) {
 
       <p>Beschrijving: {art.description}</p>
 
-      {/* Hart-knop */}
-      <button
-        onClick={() => onToggleFavorite(art.id, art.isFavorite)}
-        className={`heart-button ${art.isFavorite ? "favorited" : ""}`}
-      >
-        ♥
+       <button onClick={() => onToggleFavorite(art.id, art.isFavorite)}>
+        {art.isFavorite ? "Favoriet" : "Markeer als favoriet"}
       </button>
 
-      <hr />
-      <h2>Comments</h2>
+    <hr />
+    <h2>Comments</h2>
 
-      {art.comments && art.comments.length > 0 ? (
-        <ul>
-          {art.comments.map((c) => (
-            <li key={c.id}>
-              <div>{new Date(c.date).toLocaleString()}</div>
-              <div>{c.text}</div>
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <p>Nog geen comments.</p>
-      )}
+    {art.comments && art.comments.length > 0 ? (
+      <ul>
+        {art.comments.map((c) => (
+          <li key={c.id}>
+            <div>
+              {new Date(c.date).toLocaleString()}
+            </div>
+            <div>{c.text}</div>
+          </li>
+        ))}
+      </ul>
+    ) : (
+      <p>Nog geen comments.</p>
+    )}
 
       <div>
         <textarea
-          rows={3}
-          placeholder="Schrijf een comment met je naam..."
-          value={commentText}
+         rows={3}
+         placeholder="Schrijf een comment met je naam..."
+         value={commentText}
           onChange={(e) => setCommentText(e.target.value)}
         />
         <button
-          onClick={() => {
-            const text = commentText.trim();
-            if (!text) return;
-            onAddComment(art.id, text);
-            setCommentText("");
+         onClick={() => {
+          const text = commentText.trim();
+          if (!text) return;
+          onAddComment(art.id, text);
+          setCommentText("");     
           }}
         >
           Plaats comment
@@ -369,16 +361,10 @@ function ArtDetailPage({ artworks, onToggleFavorite, onAddComment }) {
     </div>
   );
 }
-// einde versie 2
-
-
-
-
 
 // Favorietenpagina
-
 function FavoritesPage({ artworks, onToggleFavorite }) {
-  const favoriteArtworks = artworks.filter((art) => art.isFavorite);
+    const favoriteArtworks = artworks.filter((art) => art.isFavorite);
 
   return (
     <div>
@@ -393,23 +379,26 @@ function FavoritesPage({ artworks, onToggleFavorite }) {
         <p>Je hebt nog geen favorieten geselecteerd.</p>
       )}
 
-      <div className="art-grid">
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
+          gap: "1rem",
+          marginTop: "1rem",
+        }}
+      >
         {favoriteArtworks.map((art) => (
           <div key={art.id}>
             <Link to={`/art/${art.id}`}>
-              <img src={art.imageUrl} alt={art.title} className="art-image" />
+              <img src={art.imageUrl} alt={art.title} />
             </Link>
 
             <h2>{art.title}</h2>
             <p>{art.artist}</p>
             <p>Jaar: {art.year}</p>
 
-            {/* Hart-knop */}
-            <button
-              onClick={() => onToggleFavorite(art.id, art.isFavorite)}
-              className={`heart-button ${art.isFavorite ? "favorited" : ""}`}
-            >
-              ♥
+            <button onClick={() => onToggleFavorite(art.id, art.isFavorite)}>
+              {art.isFavorite ? "Favoriet" : "Markeer als favoriet"}
             </button>
           </div>
         ))}
@@ -417,7 +406,6 @@ function FavoritesPage({ artworks, onToggleFavorite }) {
     </div>
   );
 }
-
 
 // Beveiligde login Admin-pagina
 function AdminGate({ artworks, onAddArtwork, onUpdateArtwork, onDeleteArtwork }) {
