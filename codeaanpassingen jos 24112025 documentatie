@@ -1,0 +1,332 @@
+Dit is geen js bestand, maar het kleurt handig mee in vs code!
+
+Aanpassingen Jos
+Snippet  waarin alle drie verbeteringen zijn verwerkt: uniforme afbeelding-schaal, afgekorte URL met knoppen zichtbaar, en hartje voor favorieten.
+CSS (voeg toe in App.css)
+/* Uniforme afbeelding */
+.art-image {
+  width: 100%;
+  height: 200px; /* vaste hoogte */
+  object-fit: cover; /* bijsnijden zonder vervormen */
+  border-radius: 8px;
+  display: block;
+}
+
+/* Grid layout voor overzicht */
+.art-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+/* URL in admin-tabel netjes afkappen */
+.table-url {
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+/* Hart-knop styling */
+.heart-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.8rem;
+  color: gray;
+  transition: color 0.3s ease;
+}
+
+.heart-button.favorited {
+  color: red;
+}
+
+ 
+ JSX Aanpassingen
+GalleryHome component aanpassen
+function GalleryHome({ artworks, onToggleFavorite }) {
+  const [searchTerm, setSearchTerm] = useState("");
+  const filteredArtworks = artworks.filter((art) => {
+    const term = searchTerm.toLowerCase();
+    return (
+      art.title.toLowerCase().includes(term) ||
+      art.artist.toLowerCase().includes(term)
+    );
+  });
+
+  return (
+    <div>
+      <h1>Virtuele Kunstgalerij</h1>
+      <p>Een overzicht van kunstwerken</p>
+
+      <p>
+        <Link to="/favorites">Bekijk favorieten →</Link> |{" "}
+        <Link to="/admin">Admin</Link>
+      </p>
+
+      <input
+        type="text"
+        placeholder="Zoek op titel of kunstenaar..."
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+      />
+
+      <div className="art-grid">
+        {filteredArtworks.map((art) => (
+          <div key={art.id}>
+            <Link to={`/art/${art.id}`}>
+              <img src={art.imageUrl} alt={art.title} className="art-image" />
+            </Link>
+
+            <h2>{art.title}</h2>
+            <p>{art.artist}</p>
+            <p>Jaar: {art.year}</p>
+
+            {/* Hart-knop */}
+            <button
+              onClick={() => onToggleFavorite(art.id, art.isFavorite)}
+              className={`heart-button ${art.isFavorite ? "favorited" : ""}`}
+            >
+              ♥
+            </button>
+
+            <p>
+              <Link to={`/art/${art.id}`}>Bekijk details →</Link>
+            </p>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+________________________________________
+Admin-tabel snippet
+<td>
+  <span className="table-url">{art.imageUrl}</span>
+  <button type="button" onClick={() => handleEdit(art)}>Bewerken</button>
+  <button type="button" onClick={() => onDeleteArtwork(art.id)}>Verwijderen</button>
+</td>
+Dit zorgt voor:
+•	Afbeeldingen: altijd 200px hoog, netjes bijgesneden.
+•	URL: afgekapt met ellipsis, knoppen blijven zichtbaar.
+•	Favoriet-knop: hartje dat rood wordt bij favoriet.
+ 
+Aangepaste versie van ArtDetailPage en FavoritesPage met dezelfde verbeteringen toegepast:
+CSS (voeg toe in App.css)
+(Deze blijft hetzelfde als eerder, maar ik herhaal voor volledigheid)
+.art-image {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 8px;
+  display: block;
+}
+
+.art-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.table-url {
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.heart-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.8rem;
+  color: gray;
+  transition: color 0.3s ease;
+}
+
+.heart-button.favorited {
+  color: red;
+}
+
+ 
+ArtDetailPage (met hartje en uniforme afbeelding)
+function ArtDetailPage({ artworks, onToggleFavorite, onAddComment }) {
+  const { id } = useParams();
+  const art = artworks.find((a) => String(a.id) === id);
+  const [commentText, setCommentText] = useState("");
+
+  if (!art) {
+    return (
+      <div>
+        <p>Kunstwerk niet gevonden.</p>
+        <p><Link to="/">← Terug naar overzicht</Link></p>
+      </div>
+    );
+  }
+
+  return (
+    <div>
+      <p>
+        <Link to="/">← Terug naar overzicht</Link> |{" "}
+        <Link to="/favorites">Naar favorieten</Link>
+      </p>
+
+      <img src={art.imageUrl} alt={art.title} className="art-image" />
+
+      <h1>{art.title}</h1>
+      <p>{art.artist} · {art.year}</p>
+
+      {Array.isArray(art.techniques) && art.techniques.length > 0 && (
+        <p>Technieken: {art.techniques.join(", ")}</p>
+      )}
+
+      <p>Beschrijving: {art.description}</p>
+
+      {/* Hart-knop */}
+      <button
+        onClick={() => onToggleFavorite(art.id, art.isFavorite)}
+        className={`heart-button ${art.isFavorite ? "favorited" : ""}`}
+      >
+        ♥
+      </button>
+
+      <hr />
+      <h2>Comments</h2>
+
+      {art.comments && art.comments.length > 0 ? (
+        <ul>
+          {art.comments.map((c) => (
+            <li key={c.id}>
+              <div>{new Date(c.date).toLocaleString()}</div>
+              <div>{c.text}</div>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p>Nog geen comments.</p>
+      )}
+
+      <div>
+        <textarea
+          rows={3}
+          placeholder="Schrijf een comment met je naam..."
+          value={commentText}
+          onChange={(e) => setCommentText(e.target.value)}
+        />
+        <button
+          onClick={() => {
+            const text = commentText.trim();
+            if (!text) return;
+            onAddComment(art.id, text);
+            setCommentText("");
+          }}
+        >
+          Plaats comment
+        </button>
+      </div>
+    </div>
+  );
+}
+________________________________________
+FavoritesPage (met hartje en uniforme afbeelding)
+function FavoritesPage({ artworks, onToggleFavorite }) {
+  const favoriteArtworks = artworks.filter((art) => art.isFavorite);
+
+  return (
+    <div>
+      <h1>Favorieten</h1>
+      <p>Overzicht van alle favoriete kunstwerken.</p>
+
+      <p>
+        <Link to="/">← Terug naar overzicht</Link>
+      </p>
+
+      {favoriteArtworks.length === 0 && (
+        <p>Je hebt nog geen favorieten geselecteerd.</p>
+      )}
+
+      <div className="art-grid">
+        {favoriteArtworks.map((art) => (
+          <div key={art.id}>
+            <Link to={`/art/${art.id}`}>
+              <img src={art.imageUrl} alt={art.title} className="art-image" />
+            </Link>
+
+            <h2>{art.title}</h2>
+            <p>{art.artist}</p>
+            <p>Jaar: {art.year}</p>
+
+            {/* Hart-knop */}
+            <button
+              onClick={() => onToggleFavorite(art.id, art.isFavorite)}
+              className={`heart-button ${art.isFavorite ? "favorited" : ""}`}
+            >
+              ♥
+            </button>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+________________________________________
+Nu zouden  alle pagina’s consistent moeten zijn:
+•	Afbeeldingen: uniforme hoogte en breedte.
+•	Hart-knop: vervangt tekst, kleurt rood bij favoriet.
+•	Favorietenpagina en detailpagina: zelfde look & feel.
+________________________________________
+
+Foto’s schalen
+Om de foto’s te schalen heb ik het volgende gedaan in css
+✅ Oplossing 2: Container beperken
+Zorg dat de afbeelding in een grid-item zit met een vaste breedte:
+.art-grid div {
+  max-width: 220px;
+}
+
+Op de detailpagina nam de afbeelding nog de volledige breedte van de container in, omdat daar geen grid of kaartstructuur was zoals op de overzichtspagina. Je kunt dit oplossen door de afbeelding zelf een maximale breedte te geven en te centreren, zodat hij niet uitrekt.
+CSS-oplossing voor detailpagina
+Voeg dit toe aan je App.css:
+.art-detail-image {
+  width: 100%;
+  max-width: 400px; /* stel een limiet in /
+  height: auto; / behoud verhoudingen /
+  object-fit: cover;
+  display: block;
+  margin: 0 auto; / centreert de afbeelding  WILDE IK LATER NIET*/
+  border-radius: 8px;
+}
+________________________________________
+JSX-aanpassing in ArtDetailPage
+Vervang:
+<img src={art.imageUrl} alt={art.title} className="art-image" />
+door:
+<img src={art.imageUrl} alt={art.title} className="art-detail-image" />
+________________________________________
+Waarom werkt dit?
+•	max-width zorgt dat de afbeelding nooit breder wordt dan 400px.
+•	margin: 0 auto centreert de afbeelding in de pagina.
+•	object-fit: cover houdt de afbeelding netjes bijgesneden als je later een vaste hoogte wilt toevoegen.
+ 
+De afbeelding staat mooier als hij ook aan de linkerkant staat 
+Als je de afbeelding links wilt uitlijnen in plaats van centreren, hoef je alleen de margin-regel aan te passen. Verwijder margin: 0 auto; en vervang het door bijvoorbeeld margin: 0; of laat het helemaal weg.
+Aangepaste CSS
+.art-detail-image {
+  width: 100%;
+  max-width: 400px; /* stel een limiet in /
+  height: auto; / behoud verhoudingen /
+  object-fit: cover;
+  display: block;
+  margin: 0; / afbeelding links uitlijnen */
+  border-radius: 8px;
+}
+Waarom werkt dit?
+•	margin: 0 auto; zorgt voor centreren. Door dit te verwijderen of te vervangen door margin: 0; blijft de afbeelding links uitgelijnd.
+•	display: block; zorgt dat de afbeelding netjes in de flow staat.
