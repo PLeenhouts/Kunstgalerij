@@ -24,6 +24,9 @@ export default function AdminGate({ artworks, onAddArtwork, onUpdateArtwork, onD
 
    return (
     <div>
+      <h1>Virtuele Kunstgalerij “Paintings Meets Pixels” - Where art meets technology…</h1>
+      <p>Een virtueel overzicht van kunstwerken</p>
+      <hr/>
       <h1>Admin login</h1>
       <p>Voer het admin-wachtwoord in om verder te gaan.</p>
 
@@ -44,6 +47,4 @@ export default function AdminGate({ artworks, onAddArtwork, onUpdateArtwork, onD
       </p>
     </div>
   );
-
 }
-
