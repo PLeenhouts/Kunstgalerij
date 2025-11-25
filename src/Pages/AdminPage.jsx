@@ -42,7 +42,7 @@ export default function AdminPage({ artworks, onAddArtwork, onUpdateArtwork, onD
     }
   }
 
-    const data = { title, artist, yearNumber, techniques, imageUrl, description };
+    const data = { title, artist, year: yearNumber, techniques, imageUrl, description };
 
     if (editId) {
       onUpdateArtwork(editId, data);
@@ -203,4 +203,5 @@ export default function AdminPage({ artworks, onAddArtwork, onUpdateArtwork, onD
     </div>
   );
 }
+
 
