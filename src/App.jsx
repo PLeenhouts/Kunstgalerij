@@ -23,8 +23,8 @@ function App() {
         .select("*")
         .order("title", { ascending: true });
 
-      if (error) {
-        console.error("Fout bij laden artworks:", error);
+      if (SuppaError) {
+        console.error("Fout bij laden artworks:", SupaError);
         setError("Kon kunstwerken niet laden.");
 
       } else {
