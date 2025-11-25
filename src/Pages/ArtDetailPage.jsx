@@ -40,9 +40,11 @@ export default function ArtDetailPage({ artworks, onToggleFavorite, onAddComment
 
       <p>Beschrijving: {art.description}</p>
 
-       <button onClick={() => onToggleFavorite(art.id, art.isFavorite)}>
-        {art.isFavorite ? "Ingesteld als Favoriet" : "Markeer als favoriet"}
-      </button>
+      <p> Favoriet:
+       <button onClick={() => onToggleFavorite(art.id, art.isFavorite)}
+       className={`heart-button ${art.isFavorite ? "favorited" : ""}`}>
+               ♥
+      </button></p>
 
     <hr />
     <h2>Comments</h2>
@@ -83,5 +85,6 @@ export default function ArtDetailPage({ artworks, onToggleFavorite, onAddComment
     </div>
   );
 }
+
 
 
