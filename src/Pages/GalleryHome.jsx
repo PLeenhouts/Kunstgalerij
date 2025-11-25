@@ -13,21 +13,29 @@ export default function GalleryHome({ artworks, onToggleFavorite }) {
 
   return (
     <div>
-      <h1>Virtuele Kunstgalerij</h1>
-      <p>Een overzicht van kunstwerken</p>
+      <h1>Virtuele Kunstgalerij “Paintings Meets Pixels” - Where art meets technology…</h1>
+      <p>Een virtueel overzicht van kunstwerken</p>
+      <hr/>
     
       <p>
-        <Link to="/favorites">Bekijk favorieten →</Link> |{" "}
-        <Link to="/admin">Admin</Link>
+        <h2>Links</h2>
+        <Link to="/favorites">Bekijk overzicht favorieten</Link> |{" "}
+        <Link to="/admin">Inloggen als Admin</Link>
       </p>
+      <hr/>
 
+    <h2>Zoek in de collectie</h2>
+    <p> Begin met typen om kunstwerken te zoeken/filteren. 
+        
     <input
         type="text"
         placeholder="Zoek op titel of kunstenaar..."
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
       />
-    
+      </p>
+    <hr/>
+      
       <div
         style={{
           display: "grid",
@@ -49,7 +57,7 @@ export default function GalleryHome({ artworks, onToggleFavorite }) {
               {art.isFavorite ? "Favoriet" : "Markeer als favoriet"}
             </button>
 
-            <p><Link to={`/art/${art.id}`}>Bekijk details →</Link></p>
+            <p><Link to={`/art/${art.id}`}>Bekijk details</Link></p>
           </div>
         ))}
       </div>
