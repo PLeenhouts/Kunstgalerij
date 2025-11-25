@@ -69,7 +69,7 @@ export default function AdminPage({ artworks, onAddArtwork, onUpdateArtwork, onD
       <hr/>
       <h1>Admin – Kunstwerken beheren</h1>
       <p>
-        <Link to="/">← Terug naar overzicht</Link>
+        <Link to="/">Uitloggen als Admin</Link>
       </p>
       <hr/>
      
@@ -203,3 +203,4 @@ export default function AdminPage({ artworks, onAddArtwork, onUpdateArtwork, onD
     </div>
   );
 }
+
