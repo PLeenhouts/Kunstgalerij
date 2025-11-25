@@ -10,18 +10,25 @@ export default function ArtDetailPage({ artworks, onToggleFavorite, onAddComment
     return (
       <div>
         <p>Kunstwerk niet gevonden.</p>
-        <p><Link to="/">← Terug naar overzicht</Link></p>
+        <p><Link to="/">Terug naar startpagina</Link></p>
       </div>
     );
   }
 
   return (
     <div>
-      <p>
-        <Link to="/">← Terug naar overzicht</Link> |{" "}
-        <Link to="/favorites">Naar favorieten</Link>
-      </p>
+      <h1>Virtuele Kunstgalerij “Paintings Meets Pixels” - Where art meets technology…</h1>
+      <p>Een virtueel overzicht van kunstwerken</p>
+      <hr/>
 
+      <h2>Links</h2>
+      <p>
+        <Link to="/">Terug naar startpagina</Link> |{" "}
+        <Link to="/favorites">Bekijk favorieten overzicht</Link>
+      </p>
+      <hr/>
+
+      <h2>Detailoverzicht van Kunstwerk</h2>
       <img src={art.imageUrl} alt={art.title}/>
 
       <h1 >{art.title}</h1>
@@ -34,7 +41,7 @@ export default function ArtDetailPage({ artworks, onToggleFavorite, onAddComment
       <p>Beschrijving: {art.description}</p>
 
        <button onClick={() => onToggleFavorite(art.id, art.isFavorite)}>
-        {art.isFavorite ? "Favoriet" : "Markeer als favoriet"}
+        {art.isFavorite ? "Ingesteld als Favoriet" : "Markeer als favoriet"}
       </button>
 
     <hr />
@@ -76,3 +83,5 @@ export default function ArtDetailPage({ artworks, onToggleFavorite, onAddComment
     </div>
   );
 }
+
+

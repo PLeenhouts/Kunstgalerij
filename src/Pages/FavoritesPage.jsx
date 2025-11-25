@@ -6,13 +6,19 @@ export default function FavoritesPage({ artworks, onToggleFavorite }) {
 
   return (
     <div>
+
+      <h1>Virtuele Kunstgalerij “Paintings Meets Pixels” - Where art meets technology…</h1>
+      <p>Een virtueel overzicht van kunstwerken</p>
+      <hr/>
+
+      <h1>Links</h1>
+      <p>
+        <Link to="/">Terug naar startpagina</Link>
+      </p>
+      <hr/>
+      
       <h1>Favorieten</h1>
       <p>Overzicht van alle favoriete kunstwerken.</p>
-
-      <p>
-        <Link to="/">← Terug naar overzicht</Link>
-      </p>
-
       {favoriteArtworks.length === 0 && (
         <p>Je hebt nog geen favorieten geselecteerd.</p>
       )}
@@ -36,7 +42,7 @@ export default function FavoritesPage({ artworks, onToggleFavorite }) {
             <p>Jaar: {art.year}</p>
 
             <button onClick={() => onToggleFavorite(art.id, art.isFavorite)}>
-              {art.isFavorite ? "Favoriet" : "Markeer als favoriet"}
+              {art.isFavorite ? "Ingesteld als favoriet" : "Markeer als favoriet"}
             </button>
           </div>
         ))}
@@ -44,3 +50,4 @@ export default function FavoritesPage({ artworks, onToggleFavorite }) {
     </div>
   );
 }
+
