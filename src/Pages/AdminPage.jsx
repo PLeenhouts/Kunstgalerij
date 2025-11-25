@@ -26,8 +26,23 @@ export default function AdminPage({ artworks, onAddArtwork, onUpdateArtwork, onD
       alert("Titel en kunstenaar zijn verplicht.");
       return;
     }
+  
+  let cleanedYear = year.trim();
+  let yearNumber = null;
 
-    const data = { title, artist, year, techniques, imageUrl, description };
+  if (cleanedYear !== "") {
+    yearNumber = Number(cleanedYear);
+    if (
+      Number.isNaN(yearNumber) ||
+      yearNumber < 0 ||
+      yearNumber > 2025
+    ) {
+      alert("Voer een geldig jaar in (bijv. 2025).");
+      return;
+    }
+  }
+
+    const data = { title, artist, yearNumber, techniques, imageUrl, description };
 
     if (editId) {
       onUpdateArtwork(editId, data);
@@ -41,7 +56,7 @@ export default function AdminPage({ artworks, onAddArtwork, onUpdateArtwork, onD
     setEditId(art.id);
     setTitle(art.title);
     setArtist(art.artist);
-    setYear(art.year ?? "");
+    setYear(art.year !== null && art.year !== undefined ? String(art.year): "");
     setTechniques(Array.isArray(art.techniques) ? art.techniques.join(", ") : "");
     setImageUrl(art.imageUrl || "");
     setDescription(art.description || "");
@@ -49,10 +64,14 @@ export default function AdminPage({ artworks, onAddArtwork, onUpdateArtwork, onD
 
   return (
     <div>
+      <h1>Virtuele Kunstgalerij “Paintings Meets Pixels” - Where art meets technology…</h1>
+      <p>Een virtueel overzicht van kunstwerken</p>
+      <hr/>
       <h1>Admin – Kunstwerken beheren</h1>
       <p>
         <Link to="/">← Terug naar overzicht</Link>
       </p>
+      <hr/>
      
       <h2>{editId ? "Kunstwerk bewerken" : "Nieuw kunstwerk toevoegen"}</h2>
       <form onSubmit={handleSubmit}>
@@ -62,6 +81,7 @@ export default function AdminPage({ artworks, onAddArtwork, onUpdateArtwork, onD
             <input
               type="text"
               value={title}
+              placeholder="Bijv. De nachtwacht"
               onChange={(e) => setTitle(e.target.value)}           
             />
           </label>
@@ -73,6 +93,7 @@ export default function AdminPage({ artworks, onAddArtwork, onUpdateArtwork, onD
             <input
               type="text"
               value={artist}
+              placeholder="Bijv. Rembrandt van Rijn"
               onChange={(e) => setArtist(e.target.value)}          
             />
           </label>
@@ -82,8 +103,10 @@ export default function AdminPage({ artworks, onAddArtwork, onUpdateArtwork, onD
           <label>
             Jaar:
             <input
-              type="number"
+              type="text"
+              inputMode="numeric"
               value={year}
+              placeholder="Bijv. 2025"
               onChange={(e) => setYear(e.target.value)}             
             />
           </label>
@@ -95,6 +118,7 @@ export default function AdminPage({ artworks, onAddArtwork, onUpdateArtwork, onD
             <input
               type="text"
               value={techniques}
+              placeholder="Bijv. Olieverf, Barok"
               onChange={(e) => setTechniques(e.target.value)}              
             />
           </label>
@@ -106,6 +130,7 @@ export default function AdminPage({ artworks, onAddArtwork, onUpdateArtwork, onD
             <input
               type="text"
               value={imageUrl}
+              placeholder="Bijv. www.test.com/afb.jpg"
               onChange={(e) => setImageUrl(e.target.value)}              
             />
           </label>
@@ -117,11 +142,15 @@ export default function AdminPage({ artworks, onAddArtwork, onUpdateArtwork, onD
             <input             
               type="text"
               value={description}
+              placeholder="Bijv. Een prachtig kunstwerk..."
               onChange={(e) => setDescription(e.target.value)}              
             />
           </label>
         </div>
-
+        <div>
+          <p>* is een verplicht veld</p>
+        </div>
+        
         <button type="submit">
           {editId ? "Wijzigingen opslaan" : "Toevoegen"}
         </button>
@@ -131,8 +160,9 @@ export default function AdminPage({ artworks, onAddArtwork, onUpdateArtwork, onD
           </button>
         )}
       </form>
-  
-      <h2>Bestaande kunstwerken</h2>
+      <hr/>
+      
+      <h2>Overzicht bestaande kunstwerken & Bewerken en verwijderen van bestaande kunstwerken</h2>
       {artworks.length === 0 ? (
         <p>Er zijn nog geen kunstwerken.</p>
       ) : (
