@@ -41,7 +41,7 @@ export default function ArtDetailPage({ artworks, onToggleFavorite, onAddComment
       <p>Beschrijving: {art.description}</p>
 
        <button onClick={() => onToggleFavorite(art.id, art.isFavorite)}>
-        {art.isFavorite ? "Favoriet" : "Markeer als favoriet"}
+        {art.isFavorite ? "Ingesteld als Favoriet" : "Markeer als favoriet"}
       </button>
 
     <hr />
@@ -83,4 +83,5 @@ export default function ArtDetailPage({ artworks, onToggleFavorite, onAddComment
     </div>
   );
 }
+
 
