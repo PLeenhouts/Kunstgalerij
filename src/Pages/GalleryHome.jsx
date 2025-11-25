@@ -53,9 +53,11 @@ export default function GalleryHome({ artworks, onToggleFavorite }) {
             <h2>{art.title}</h2>
             <p>{art.artist}</p>
             <p>Jaar: {art.year}</p>
-            <button onClick={() => onToggleFavorite(art.id, art.isFavorite)}>
-              {art.isFavorite ? "Ingesteld als favoriet" : "Markeer als favoriet"}
-            </button>
+            <p> Favoriet: 
+              <button onClick={() => onToggleFavorite(art.id, art.isFavorite)}
+              className={`heart-button ${art.isFavorite ? "favorited" : ""}`}>
+               ♥
+              </button></p>
 
             <p><Link to={`/art/${art.id}`}>Bekijk details</Link></p>
           </div>
@@ -64,4 +66,3 @@ export default function GalleryHome({ artworks, onToggleFavorite }) {
     </div>
   );
 }
-
