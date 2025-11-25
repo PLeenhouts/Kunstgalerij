@@ -42,7 +42,7 @@ export default function FavoritesPage({ artworks, onToggleFavorite }) {
             <p>Jaar: {art.year}</p>
 
             <button onClick={() => onToggleFavorite(art.id, art.isFavorite)}>
-              {art.isFavorite ? "Favoriet" : "Markeer als favoriet"}
+              {art.isFavorite ? "Ingesteld als favoriet" : "Markeer als favoriet"}
             </button>
           </div>
         ))}
@@ -50,3 +50,4 @@ export default function FavoritesPage({ artworks, onToggleFavorite }) {
     </div>
   );
 }
+
