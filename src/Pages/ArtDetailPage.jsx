@@ -10,7 +10,7 @@ export default function ArtDetailPage({ artworks, onToggleFavorite, onAddComment
     return (
       <div>
         <p>Kunstwerk niet gevonden.</p>
-        <p><Link to="/">Terug naar overzicht</Link></p>
+        <p><Link to="/">Terug naar startpagina</Link></p>
       </div>
     );
   }
@@ -83,3 +83,4 @@ export default function ArtDetailPage({ artworks, onToggleFavorite, onAddComment
     </div>
   );
 }
+
