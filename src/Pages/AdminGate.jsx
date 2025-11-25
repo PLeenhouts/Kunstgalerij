@@ -43,8 +43,9 @@ export default function AdminGate({ artworks, onAddArtwork, onUpdateArtwork, onD
       {error && <p style={{ color: "red" }}>{error}</p>}
 
       <p>
-        <Link to="/">← Terug naar overzicht</Link>
+        <Link to="/">← Terug naar startpagina</Link>
       </p>
     </div>
   );
 }
+
