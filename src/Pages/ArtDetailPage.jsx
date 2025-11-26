@@ -4,6 +4,7 @@ import { Routes, Route, Link, useParams } from "react-router-dom";
 export default function ArtDetailPage({ artworks, onToggleFavorite, onAddComment }) {
   const { id } = useParams();
   const art = artworks.find((a) => String(a.id) === id);
+  const [author, setAuthor] = useState("");
   const [commentText, setCommentText] = useState("");
 
   if (!art) {
@@ -14,7 +15,15 @@ export default function ArtDetailPage({ artworks, onToggleFavorite, onAddComment
       </div>
     );
   }
-
+  
+function handleSubmitComment() {
+    const text = commentText.trim();
+    const name = author.trim() || "Anoniem";
+    if (!text) return;
+    onAddComment(art.id, text, name);
+    setCommentText("");
+    setAuthor("");
+  }
   return (
     <div>
       <h1>Virtuele Kunstgalerij “Paintings Meets Pixels” - Where art meets technology…</h1>
@@ -54,7 +63,8 @@ export default function ArtDetailPage({ artworks, onToggleFavorite, onAddComment
         {art.comments.map((c) => (
           <li key={c.id}>
             <div>
-              {new Date(c.date).toLocaleString()}
+              <strong>{c.author || "Anoniem"}</strong> –{" "}
+              {c.date? new Date(c.date).toLocaleString()}
             </div>
             <div>{c.text}</div>
           </li>
@@ -63,28 +73,32 @@ export default function ArtDetailPage({ artworks, onToggleFavorite, onAddComment
     ) : (
       <p>Nog geen comments.</p>
     )}
-
-      <div>
+ <div>
+      <p> 
+      <input
+        type="text"
+        placeholder="Naam"
+        value={author}
+        onChange={(e) => setAuthor(e.target.value)}
+        />
+  </p>
+   <p>
         <textarea
          rows={3}
          placeholder="Schrijf een comment met je naam..."
          value={commentText}
           onChange={(e) => setCommentText(e.target.value)}
         />
-        <button
-         onClick={() => {
-          const text = commentText.trim();
-          if (!text) return;
-          onAddComment(art.id, text);
-          setCommentText("");     
-          }}
-        >
+   </p>
+   
+        <<button onClick={handleSubmitComment}>
           Plaats comment
         </button>
       </div>
     </div>
   );
 }
+
 
 
 
