@@ -82,7 +82,7 @@ function handleSubmitComment() {
   </p>
    <p>
         <textarea
-         rows={3}
+         rows={2}
          placeholder="Schrijf een comment..."
          value={commentText}
           onChange={(e) => setCommentText(e.target.value)}
@@ -96,3 +96,4 @@ function handleSubmitComment() {
     </div>
   );
 }
+
