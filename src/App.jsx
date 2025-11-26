@@ -23,7 +23,7 @@ function App() {
         .select("*")
         .order("title", { ascending: true });
 
-      if (ArtworksError) {
+      if (artworksError) {
         console.error("Fout bij laden artworks:", artworksError);
         setError("Kon kunstwerken niet laden.");
         setLoading(false);
