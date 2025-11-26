@@ -69,10 +69,10 @@ async function handleToggleFavorite(id, currentIsFavorite) {
     }
 }
 
-  function handleAddComment(id, text) {
+  function handleAddComment(id, text,author) {
     setArtworks((prevArtworks) =>
       prevArtworks.map((art) =>
-        art.id === id ? { ...art, comments: [ ...(art.comments || []), { id: Date.now(), text, date: new Date().toISOString()}]}
+        art.id === id ? { ...art, comments: [ ...(art.comments || []), { id: Date.now(), text, author, date: new Date().toISOString()}]}
         : art
       )
     );
