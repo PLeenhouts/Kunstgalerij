@@ -24,6 +24,7 @@ function handleSubmitComment() {
     setCommentText("");
     setAuthor("");
   }
+  
   return (
     <div>
       <h1>Virtuele Kunstgalerij “Paintings Meets Pixels” - Where art meets technology…</h1>
@@ -46,15 +47,12 @@ function handleSubmitComment() {
       {Array.isArray(art.techniques) && art.techniques.length > 0 && (
         <p>Technieken: {art.techniques.join(", ")}</p>
       )}
-
       <p>Beschrijving: {art.description}</p>
-
-      <p> Favoriet:
+      <p>Favoriet:
        <button onClick={() => onToggleFavorite(art.id, art.isFavorite)}
        className={`heart-button ${art.isFavorite ? "favorited" : ""}`}>
                ♥
       </button></p>
-
     <hr />
     <h2>Comments</h2>
 
@@ -64,7 +62,7 @@ function handleSubmitComment() {
           <li key={c.id}>
             <div>
               <strong>{c.author || "Anoniem"}</strong> –{" "}
-              {c.date? new Date(c.date).toLocaleString()}
+              {c.date? new Date(c.date).toLocaleString() : ""}
             </div>
             <div>{c.text}</div>
           </li>
@@ -85,20 +83,16 @@ function handleSubmitComment() {
    <p>
         <textarea
          rows={3}
-         placeholder="Schrijf een comment met je naam..."
+         placeholder="Schrijf een comment..."
          value={commentText}
           onChange={(e) => setCommentText(e.target.value)}
         />
    </p>
    
-        <<button onClick={handleSubmitComment}>
+        <button onClick={handleSubmitComment}>
           Plaats comment
         </button>
       </div>
     </div>
   );
 }
-
-
-
-

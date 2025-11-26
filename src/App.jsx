@@ -18,39 +18,52 @@ function App() {
       setLoading(true);
       setError("");
 
-      const { data, error } = await supabase
+      const { data: artworksData, error: artworksError } = await supabase
         .from("artworks")
         .select("*")
         .order("title", { ascending: true });
 
-      if (SuppaError) {
-        console.error("Fout bij laden artworks:", SupaError);
+      if (ArtworksError) {
+        console.error("Fout bij laden artworks:", artworksError);
         setError("Kon kunstwerken niet laden.");
+        setLoading(false);
+        return;
+      }
+      
+        const { data: commentsData, error: commentsError } = await supabase
+        .from("comments")
+        .select("*")
+        .order("created_at", { ascending: true });
 
-      } else {
-        
-        const mapped = data.map((row) => ({
-          id: row.id,
-          title: row.title,
-          artist: row.artist,
-          year: row.year,
-          imageUrl: row.image_url,
-          description: row.description,
-          techniques: row.techniques
-            ? row.techniques.split(",").map((t) => t.trim())
-            : [],
-          isFavorite: row.is_favorite ?? false,
-          comments: [],
-        }));
-        setArtworks(mapped);
+      if (commentsError) {
+        console.error("Fout bij laden comments:", commentsError);
       }
 
-      setLoading(false);
+    const commentsByArtwork = {};
+    if (commentsData) {
+      for (const c of commentsData) {
+        const artId = c.artwork_id;
+        if (!commentsByArtwork[artId]) {
+          commentsByArtwork[artId] = [];
+        }
+        commentsByArtwork[artId].push({
+          id: c.id,
+          text: c.text,
+          author: c.author || "Anoniem",
+          date: c.created_at,
+        });
+      }
     }
+
+    const mapped = artworksData.map((row) => mapRowToArtwork(row, commentsByArtwork));
+
+    setArtworks(mapped);
+    setLoading(false);
+  }
 
     fetchArtworks();
   }, []);
-
+      
 async function handleToggleFavorite(id, currentIsFavorite) {
    setArtworks((prevArtworks) =>
     prevArtworks.map((art) =>
@@ -69,14 +82,41 @@ async function handleToggleFavorite(id, currentIsFavorite) {
     }
 }
 
-  function handleAddComment(id, text,author) {
-    setArtworks((prevArtworks) =>
-      prevArtworks.map((art) =>
-        art.id === id ? { ...art, comments: [ ...(art.comments || []), { id: Date.now(), text, author, date: new Date().toISOString()}]}
-        : art
-      )
-    );
+async function handleAddComment(artworkId, text, author) {
+   const { data, error } = await supabase
+    .from("comments")
+    .insert({
+      artwork_id: artworkId,
+      text,
+      author,
+    })
+    .select()
+    .single();
+
+  if (error) {
+    console.error("Fout bij opslaan comment:", error);
+    alert("Opmerking kon niet opgeslagen worden.");
+    return;
   }
+
+  const newComment = {
+    id: data.id,
+    text: data.text,
+    author: data.author || "Anoniem",
+    date: data.created_at,
+  };
+
+  setArtworks((prevArtworks) =>
+    prevArtworks.map((art) =>
+      art.id === artworkId
+        ? {
+            ...art,
+            comments: [...(art.comments || []), newComment],
+          }
+        : art
+    )
+  );
+}
 
   async function handleAddArtwork(formData) {
     const rowToInsert = {
@@ -154,42 +194,6 @@ async function handleToggleFavorite(id, currentIsFavorite) {
    setArtworks((prev) => prev.filter((art) => art.id !== id));
 }
 
-  useEffect(() => {
-    async function fetchArtworks() {
-      setLoading(true);
-      setError("");
-
-      const { data, error: supaError } = await supabase
-        .from("artworks")
-        .select("*")
-        .order("title", { ascending: true });
-
-      if (error) {
-        console.error("Fout bij laden artworks:", SupaError);
-        setError("Kon kunstwerken niet laden.");
-      } else {
-        const mapped = data.map((row) => ({
-          id: row.id,
-          title: row.title,
-          artist: row.artist,
-          year: row.year,
-          imageUrl: row.image_url,
-          description: row.description,
-          techniques: row.techniques
-            ? row.techniques.split(",").map((t) => t.trim())
-            : [],
-          isFavorite: row.is_favorite ?? false,
-          comments: [],
-        }));
-        setArtworks(mapped);
-      }
-
-      setLoading(false);
-    }
-
-    fetchArtworks();
-  }, []);
-
   if (loading) {
     return <p>Kunstwerken laden…</p>;
   }
@@ -217,7 +221,7 @@ async function handleToggleFavorite(id, currentIsFavorite) {
 
 export default App;
 
-function mapRowToArtwork(row) {
+function mapRowToArtwork(row, commentsByArtwork = {}) {
   return {
     id: row.id,
     title: row.title,
@@ -229,6 +233,6 @@ function mapRowToArtwork(row) {
       ? row.techniques.split(",").map((t) => t.trim()).filter(Boolean)
       : [],
     isFavorite: row.is_favorite ?? false,
-    comments: [],
+    comments: commentsByArtwork[row.id] ?? [],
   };
 }
